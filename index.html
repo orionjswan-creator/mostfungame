@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Cannonball Cove — A Pirate Siege Game</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="wrap">
+  <canvas id="game" width="1280" height="720"></canvas>
+
+  <!-- in-game corner buttons -->
+  <div id="ui-buttons" class="hidden">
+    <button id="btn-restart" title="Restart level (R)">&#x21bb;</button>
+    <button id="btn-map" title="Level map">&#x2630;</button>
+    <button id="btn-mute" title="Sound on/off (M)">&#x1F50A;</button>
+  </div>
+
+  <!-- title screen -->
+  <div id="menu" class="overlay">
+    <div class="panel title-panel">
+      <div class="skull">&#x2620;</div>
+      <h1>Cannonball&nbsp;Cove</h1>
+      <p class="sub">A high-seas siege of powder &amp; plunder</p>
+      <button class="big gold" id="btn-play">&#x2693; Set Sail</button>
+      <div class="howto">
+        <div><b>Drag &amp; release</b> anywhere to fire the cannon</div>
+        <div><b>Tap mid-flight</b> to trigger special shot powers</div>
+        <div>Sink every scallywag to win the level!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- level select -->
+  <div id="levels" class="overlay hidden">
+    <div class="panel">
+      <h2>Chart Yer Course</h2>
+      <div id="level-grid"></div>
+      <button id="btn-back">&#x25c0; Back</button>
+    </div>
+  </div>
+
+  <!-- win / lose -->
+  <div id="result" class="overlay hidden">
+    <div class="panel result-panel">
+      <h2 id="result-title">Victory!</h2>
+      <div id="result-stars"></div>
+      <div id="result-score"></div>
+      <div id="result-best"></div>
+      <div class="row">
+        <button id="btn-retry">&#x21bb; Retry</button>
+        <button id="btn-levels">&#x2630; Map</button>
+        <button id="btn-next" class="gold">Next &#x25b6;</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="game.js"></script>
+</body>
+</html>
