@@ -23,7 +23,8 @@ Works with mouse or touch.
 - Eliminate **every pirate** on the enemy ship to win the level.
 - **They shoot back!** Enemy bow chasers lob cannonballs (red-ringed) at your
   ship — watch your **hull bar**. If it hits zero, you're sunk. Every pirate
-  you eliminate thins the gun crew and slows their rate of fire.
+  you eliminate thins the gun crew and slows their rate of fire. Below 70%
+  hull your ship starts smoking; below 30% she's burning — finish the fight!
 - Unspent cannonballs earn **+750 each** and surviving hull earns up to
   **+400** — win fast and clean for 3 stars!
 
@@ -52,8 +53,11 @@ Works with mouse or touch.
 2. **Powder Keg** — meet the TNT barrel.
 3. **Grapeshot Alley** — split shots vs a two-deck ship.
 4. **Iron Sides** — bomb your way past stone walls.
-5. **The Flagship** — everything at once.
+5. **The Flagship** — everything at once, twin bow chasers.
 6. **Davy Jones' Door** — the Captain awaits.
+7. **Ironclad Reef** — stone casemates shelter the crew.
+8. **Twin Terrors** — two ships, guns on both.
+9. **The Kraken's Court** — the final gauntlet. Fast, accurate, merciless.
 
 Progress (stars & best scores) is saved in your browser via `localStorage`.
 Levels unlock in order.

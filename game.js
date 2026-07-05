@@ -585,7 +585,8 @@ const game = {
   hullMax: 100,
   hullFlash: 0,
   sunk: false,
-  enemyGuns: []
+  enemyGuns: [],
+  smolders: []
 };
 
 /* progress persistence */
@@ -673,7 +674,7 @@ const LEVELS = [
     name: 'First Blood',
     ammo: ['ball', 'ball', 'ball', 'ball'],
     stars: [3400, 4700],
-    fire: { interval: 12, variance: 100, delay: 6, guns: 1 },
+    fire: { interval: 10, variance: 90, delay: 5.5, guns: 1 },
     hint: 'Drag anywhere, pull back, release — FIRE!',
     build(h){
       h.enemyShip(950, 400);
@@ -690,7 +691,7 @@ const LEVELS = [
     name: 'Powder Keg',
     ammo: ['ball', 'ball', 'ball', 'ball'],
     stars: [4300, 5600],
-    fire: { interval: 10, variance: 90, delay: 5, guns: 1 },
+    fire: { interval: 8.5, variance: 75, delay: 4.5, guns: 1 },
     hint: 'Red barrels go BOOM. Aim for them — and mind yer hull!',
     build(h){
       h.enemyShip(950, 420);
@@ -711,7 +712,7 @@ const LEVELS = [
     name: 'Grapeshot Alley',
     ammo: ['ball', 'split', 'split', 'ball'],
     stars: [4800, 6400],
-    fire: { interval: 9, variance: 80, delay: 5, guns: 1 },
+    fire: { interval: 7.5, variance: 65, delay: 4.5, guns: 1 },
     hint: 'Grapeshot: tap while flying to split into 3!',
     build(h){
       h.enemyShip(920, 360);
@@ -729,7 +730,7 @@ const LEVELS = [
     name: 'Iron Sides',
     ammo: ['bomb', 'bomb', 'ball', 'bomb'],
     stars: [4000, 5500],
-    fire: { interval: 8.5, variance: 70, delay: 4.5, guns: 1 },
+    fire: { interval: 7, variance: 55, delay: 4, guns: 1 },
     hint: 'Bombshells: tap mid-air to detonate over the wall!',
     build(h){
       h.enemyShip(960, 420);
@@ -746,7 +747,7 @@ const LEVELS = [
     name: 'The Flagship',
     ammo: ['ball', 'heavy', 'split', 'bomb', 'ball'],
     stars: [5200, 7000],
-    fire: { interval: 8, variance: 60, delay: 4, guns: 2 },
+    fire: { interval: 6.5, variance: 45, delay: 4, guns: 2 },
     hint: 'Two bow chasers! The Kraken Ball smashes anything!',
     build(h){
       h.enemyShip(950, 460);
@@ -770,7 +771,7 @@ const LEVELS = [
     name: "Davy Jones' Door",
     ammo: ['split', 'heavy', 'bomb', 'ball', 'bomb'],
     stars: [5800, 7800],
-    fire: { interval: 7, variance: 50, delay: 3.5, guns: 2 },
+    fire: { interval: 6, variance: 40, delay: 3.5, guns: 2 },
     hint: 'The Captain waits atop the aft deck. Send him swimming!',
     build(h){
       h.enemyShip(940, 460);
@@ -786,6 +787,79 @@ const LEVELS = [
       h.pirate(1030, 388, true);    // the Captain
       h.crate(1120, 388);
       h.chest(520);
+    }
+  },
+  {
+    name: 'Ironclad Reef',
+    ammo: ['bomb', 'ball', 'bomb', 'split', 'bomb'],
+    stars: [5200, 6900],
+    fire: { interval: 5.5, variance: 40, delay: 3.5, guns: 2 },
+    hint: 'Stone casemates! Blast through — or blast NEAR them.',
+    build(h){
+      h.enemyShip(950, 460);
+      const p1 = h.stone(770, h.DECK, 26, 100);
+      h.stone(850, h.DECK, 26, 100);
+      const t1 = h.stone(810, p1, 124, 18);
+      h.pirate(810, t1);
+      h.barrel(810, h.DECK);
+      h.pirate(920, h.DECK);
+      const p2 = h.stone(1000, h.DECK, 26, 100);
+      h.stone(1080, h.DECK, 26, 100);
+      const t2 = h.stone(1040, p2, 124, 18);
+      h.pirate(1040, h.DECK);       // sheltered inside the casemate
+      h.pirate(1040, t2);
+      h.barrel(1130, h.DECK);
+      h.chest(560);
+    }
+  },
+  {
+    name: 'Twin Terrors',
+    ammo: ['split', 'bomb', 'heavy', 'ball', 'bomb'],
+    stars: [5500, 7000],
+    fire: { interval: 6.5, variance: 45, delay: 4, guns: 1 },
+    hint: 'TWO ships, two guns! Sink the raider, then the flagship.',
+    build(h){
+      // forward raider
+      h.enemyShip(690, 220);
+      const t1 = h.crate(630, h.DECK);
+      h.pirate(630, t1);
+      h.pirate(690, h.DECK);
+      h.barrel(745, h.DECK);
+      // main ship behind
+      h.enemyShip(1070, 280);
+      const t2 = h.post(985, h.DECK);
+      h.post(1060, h.DECK);
+      const t3 = h.plank(1022, t2, 120);
+      h.pirate(1022, t3, true);     // the First Mate
+      h.pirate(1022, h.DECK);
+      const c1 = h.crate(1140, h.DECK);
+      const c2 = h.crate(1140, c1);
+      h.pirate(1140, c2);
+      h.chest(865);                 // floats in the gap between the ships
+    }
+  },
+  {
+    name: "The Kraken's Court",
+    ammo: ['bomb', 'heavy', 'split', 'bomb', 'ball', 'bomb'],
+    stars: [6400, 8300],
+    fire: { interval: 5, variance: 32, delay: 3, guns: 2 },
+    hint: 'The final gauntlet. Chain the barrels or be sent below!',
+    build(h){
+      h.enemyShip(940, 500);
+      h.platform(1080, 380, 200);
+      const p1 = h.stone(740, h.DECK, 26, 110);
+      h.stone(820, h.DECK, 26, 110);
+      const t1 = h.stone(780, p1, 120, 18);
+      h.pirate(780, t1);
+      h.barrel(780, h.DECK);
+      h.pirate(880, h.DECK);
+      h.barrel(935, h.DECK);
+      h.pirate(1040, h.DECK);       // hides under the platform
+      h.barrel(1110, h.DECK);
+      h.pirate(1030, 380, true);    // the Kraken Captain
+      const c1 = h.crate(1110, 380);
+      h.pirate(1110, c1);
+      h.chest(500);
     }
   }
 ];
@@ -817,6 +891,7 @@ function scheduleExplosion(x, y, r, dmg, power, delay = 0){
 function detonate(x, y, r, dmg, power){
   Sound.play('explode');
   shake(1);
+  if(y < WATER_Y - 10) game.smolders.push({ x, y: Math.min(y, WATER_Y - 30), t: rand(3, 4.5) });
   spawnParticles(x, y, { n: 26, kind: 'fire', color: '#ff9d2e', speed: 350, size: 12, life: 0.55, gravity: 0.2 });
   spawnParticles(x, y, { n: 18, kind: 'smoke', color: '#5a5a5a', speed: 160, size: 16, life: 1.1, gravity: -0.15 });
   spawnParticles(x, y, { n: 12, kind: 'spark', color: '#ffe27a', speed: 520, size: 3, life: 0.4, gravity: 0.6 });
@@ -1039,6 +1114,7 @@ function loadLevel(idx){
   game.hullFlash = 0;
   game.sunk = false;
   game.enemyGuns = [];
+  game.smolders = [];
 
   // player ship deck (static)
   const pd = addStaticBox(180, 512, 310, 14, 'deck');
@@ -1049,15 +1125,16 @@ function loadLevel(idx){
   game.ammo = L.ammo.slice();
   L.build(H_);
 
-  // enemy return fire: bow-chaser mortars on the enemy hull
+  // enemy return fire: bow-chaser mortars on every enemy hull
   if(L.fire){
-    const eh = game.hulls.find(hl => hl.enemy);
-    if(eh){
+    let gi = 0;
+    for(const eh of game.hulls){
+      if(!eh.enemy) continue;
       const gx = eh.cx - eh.w / 2 - 30, gy = eh.topY + 40;
-      for(let g = 0; g < (L.fire.guns || 1); g++){
+      for(let g = 0; g < (L.fire.guns || 1); g++, gi++){
         game.enemyGuns.push({
           x: gx + g * 26, y: gy,
-          t: L.fire.delay + g * L.fire.interval * 0.5,
+          t: L.fire.delay + gi * L.fire.interval * 0.5,
           interval: L.fire.interval, variance: L.fire.variance, flash: 0
         });
       }
@@ -1137,7 +1214,7 @@ function updateGame(dt){
     for(const [b, other] of [[m.a, m.b], [m.b, m.a]]){
       if(b.isEnemy && !b.dead && other.playerShip){
         b.dead = true;
-        damageHull(rand(12, 19), b.pos.x);
+        damageHull(rand(14, 22), b.pos.x);
       }
     }
   }
@@ -1150,7 +1227,7 @@ function updateGame(dt){
         gun.t -= dt;
         if(gun.t <= 0){
           fireEnemyGun(gun);
-          const crewFactor = 1 + 0.3 * (game.piratesTotal - alive);
+          const crewFactor = 1 + 0.22 * (game.piratesTotal - alive);
           gun.t = gun.interval * crewFactor * rand(0.85, 1.15);
         }
       }
@@ -1893,6 +1970,62 @@ function drawWaterFront(t){
   }
 }
 
+function updateAmbientSmoke(dt){
+  // lingering smolder where explosions scorched the deck
+  for(let i = game.smolders.length - 1; i >= 0; i--){
+    const s = game.smolders[i];
+    s.t -= dt;
+    if(s.t <= 0){ game.smolders.splice(i, 1); continue; }
+    if(Math.random() < dt * 13 * Math.min(1, s.t / 2)){
+      game.particles.push({
+        x: s.x + rand(-14, 14), y: s.y + rand(-8, 6),
+        vx: rand(-14, 14), vy: rand(-52, -24),
+        life: rand(0.8, 1.7), maxLife: 1.7,
+        kind: 'smoke', color: Math.random() < 0.5 ? '#4a4a4a' : '#6d6d6d',
+        size: rand(6, 13), rot: 0, vr: 0, grav: -0.14
+      });
+    }
+  }
+  // battle damage on our ship: smoke thickens as the hull fails, fire when critical
+  if(game.state !== 'play' && game.state !== 'result') return;
+  if(!game.enemyGuns.length) return;
+  const frac = game.hull / game.hullMax;
+  if(frac >= 0.7) return;
+  const sev = 1 - frac / 0.7;                  // 0 at 70% hull -> 1 at 0%
+  for(const px of [96, 236]){
+    if(Math.random() < dt * (2.5 + sev * 15)){
+      const dark = Math.random() < sev;
+      game.particles.push({
+        x: px + rand(-16, 16), y: 498 + rand(-4, 4),
+        vx: rand(-10, 20), vy: rand(-70, -34) * (0.7 + sev * 0.6),
+        life: rand(0.9, 2.0), maxLife: 2.0,
+        kind: 'smoke', color: dark ? '#33322f' : '#77756f',
+        size: rand(7, 15) * (0.8 + sev * 0.6), rot: 0, vr: 0, grav: -0.16
+      });
+    }
+  }
+  if(frac < 0.3){
+    if(Math.random() < dt * 11){
+      game.particles.push({
+        x: 166 + rand(-40, 60), y: 500 + rand(-4, 2),
+        vx: rand(-8, 8), vy: rand(-60, -30),
+        life: rand(0.25, 0.5), maxLife: 0.5,
+        kind: 'fire', color: '#ff8c2e',
+        size: rand(5, 10), rot: 0, vr: 0, grav: -0.3
+      });
+    }
+    if(Math.random() < dt * 5){
+      game.particles.push({
+        x: 166 + rand(-40, 60), y: 496,
+        vx: rand(-30, 30), vy: rand(-140, -60),
+        life: rand(0.3, 0.7), maxLife: 0.7,
+        kind: 'spark', color: '#ffce54',
+        size: rand(2, 3.5), rot: 0, vr: 0, grav: 0.25
+      });
+    }
+  }
+}
+
 function drawParticles(dt){
   for(let i = game.particles.length - 1; i >= 0; i--){
     const p = game.particles[i];
@@ -2123,6 +2256,7 @@ function render(dt){
   drawCannon(t);
   drawAimUI();
   drawWaterFront(t);
+  updateAmbientSmoke(dt);
   drawParticles(dt);
   drawHUD();
   ctx.restore();
