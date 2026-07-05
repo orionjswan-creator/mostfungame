@@ -21,7 +21,11 @@ Works with mouse or touch.
   Pull farther for more power; a dotted arc previews your shot.
 - **Tap (or press Space) while a special shot is flying** to trigger its power.
 - Eliminate **every pirate** on the enemy ship to win the level.
-- Unspent cannonballs earn a **750-point bonus** each — win efficiently for 3 stars!
+- **They shoot back!** Enemy bow chasers lob cannonballs (red-ringed) at your
+  ship — watch your **hull bar**. If it hits zero, you're sunk. Every pirate
+  you eliminate thins the gun crew and slows their rate of fire.
+- Unspent cannonballs earn **+750 each** and surviving hull earns up to
+  **+400** — win fast and clean for 3 stars!
 
 ### Ammo types
 
@@ -39,6 +43,8 @@ Works with mouse or touch.
 - **Red TNT barrels** — shoot them for glorious chain reactions.
 - **Floating treasure chests** — clip one with a shot for +500 gold.
 - **The Captain** — bigger, tougher, and worth double. Send him swimming.
+- **Bow-chaser mortars** — the enemy's return fire. Later ships shoot faster,
+  aim better, and mount two guns.
 
 ## Levels
 

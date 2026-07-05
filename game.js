@@ -162,6 +162,18 @@ const Sound = {
         n.connect(f); mk(f, 0.12, 0.2); n.start(t);
         break;
       }
+      case 'whistle': {
+        const o = c.createOscillator();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(1300, t);
+        o.frequency.exponentialRampToValueAtTime(350, t + 1.1);
+        const g = c.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.07, t + 0.15);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 1.1);
+        o.connect(g); g.connect(out); o.start(t); o.stop(t + 1.15);
+        break;
+      }
     }
   }
 };
@@ -568,7 +580,12 @@ const game = {
   settleT: 0,
   lastActionT: 0,
   won: false,
-  muzzleFlash: 0
+  muzzleFlash: 0,
+  hull: 100,
+  hullMax: 100,
+  hullFlash: 0,
+  sunk: false,
+  enemyGuns: []
 };
 
 /* progress persistence */
@@ -655,7 +672,8 @@ const LEVELS = [
   {
     name: 'First Blood',
     ammo: ['ball', 'ball', 'ball', 'ball'],
-    stars: [3400, 4800],
+    stars: [3400, 4700],
+    fire: { interval: 12, variance: 100, delay: 6, guns: 1 },
     hint: 'Drag anywhere, pull back, release — FIRE!',
     build(h){
       h.enemyShip(950, 400);
@@ -670,9 +688,10 @@ const LEVELS = [
   },
   {
     name: 'Powder Keg',
-    ammo: ['ball', 'ball', 'ball', 'ball', 'ball'],
-    stars: [5000, 7000],
-    hint: 'Red barrels go BOOM. Aim for them!',
+    ammo: ['ball', 'ball', 'ball', 'ball'],
+    stars: [4300, 5600],
+    fire: { interval: 10, variance: 90, delay: 5, guns: 1 },
+    hint: 'Red barrels go BOOM. Aim for them — and mind yer hull!',
     build(h){
       h.enemyShip(950, 420);
       const t1 = h.crate(790, h.DECK);
@@ -691,7 +710,8 @@ const LEVELS = [
   {
     name: 'Grapeshot Alley',
     ammo: ['ball', 'split', 'split', 'ball'],
-    stars: [5200, 7300],
+    stars: [4800, 6400],
+    fire: { interval: 9, variance: 80, delay: 5, guns: 1 },
     hint: 'Grapeshot: tap while flying to split into 3!',
     build(h){
       h.enemyShip(920, 360);
@@ -708,7 +728,8 @@ const LEVELS = [
   {
     name: 'Iron Sides',
     ammo: ['bomb', 'bomb', 'ball', 'bomb'],
-    stars: [4200, 6200],
+    stars: [4000, 5500],
+    fire: { interval: 8.5, variance: 70, delay: 4.5, guns: 1 },
     hint: 'Bombshells: tap mid-air to detonate over the wall!',
     build(h){
       h.enemyShip(960, 420);
@@ -724,8 +745,9 @@ const LEVELS = [
   {
     name: 'The Flagship',
     ammo: ['ball', 'heavy', 'split', 'bomb', 'ball'],
-    stars: [6500, 9200],
-    hint: 'The Kraken Ball smashes anything in its path!',
+    stars: [5200, 7000],
+    fire: { interval: 8, variance: 60, delay: 4, guns: 2 },
+    hint: 'Two bow chasers! The Kraken Ball smashes anything!',
     build(h){
       h.enemyShip(950, 460);
       h.pirate(762, h.DECK);
@@ -747,7 +769,8 @@ const LEVELS = [
   {
     name: "Davy Jones' Door",
     ammo: ['split', 'heavy', 'bomb', 'ball', 'bomb'],
-    stars: [7000, 10000],
+    stars: [5800, 7800],
+    fire: { interval: 7, variance: 50, delay: 3.5, guns: 2 },
     hint: 'The Captain waits atop the aft deck. Send him swimming!',
     build(h){
       h.enemyShip(940, 460);
@@ -942,6 +965,49 @@ function useAbility(){
   }
 }
 
+/* ------- enemy return fire ------- */
+function fireEnemyGun(gun){
+  // ballistic solve: lob at the player ship with per-level scatter
+  const tx = rand(120, 300) + rand(-gun.variance, gun.variance);
+  const T = rand(1.35, 1.7);
+  const sx = gun.x - 14, sy = gun.y - 8;
+  const vx = (tx - sx) / T;
+  const vy = (505 - sy) / T - 0.5 * GRAVITY.y * T;
+  const b = game.world.add(new Body(circleShape(10), sx, sy, {
+    kind: 'ball', ballType: 'ball', density: 7.8,
+    restitution: 0.28, sf: 0.4, df: 0.3
+  }));
+  b.vel = v2(vx, vy);
+  b.isEnemy = true;
+  gun.flash = 1;
+  Sound.play('boom');
+  Sound.play('whistle');
+  spawnParticles(sx, sy, { n: 8, kind: 'smoke', color: '#888', speed: 100, size: 8, life: 0.7, gravity: -0.2 });
+  spawnParticles(sx, sy, { n: 6, kind: 'spark', color: '#ffce54', speed: 240, size: 3, life: 0.25 });
+}
+
+function damageHull(amount, x){
+  if(game.sunk || game.state !== 'play') return;
+  game.hull = Math.max(0, game.hull - amount);
+  game.hullFlash = 1;
+  addPopup(x, 468, '-' + Math.round(amount), '#ff6b57');
+  shake(0.5);
+  Sound.play('crack');
+  Sound.play('thud');
+  spawnParticles(x, 505, { n: 10, kind: 'shard', color: '#7c4a24', speed: 220, size: 5, life: 0.7 });
+  game.lastActionT = game.time;
+  if(game.hull <= 0){
+    game.sunk = true;
+    game.canFire = false;
+    game.aiming = false;
+    detonate(180, 490, 150, 0, 300);   // dramatic blast on our deck
+    if(game.endKind !== 'win'){
+      game.endKind = 'lose';
+      game.endTimer = 1.3;
+    }
+  }
+}
+
 /* ============================ 10. LEVEL FLOW ============================ */
 function loadLevel(idx){
   game.levelIdx = idx;
@@ -969,13 +1035,34 @@ function loadLevel(idx){
   game.time = 0;
   game.cannonAngle = -0.5;
 
+  game.hull = game.hullMax = 100;
+  game.hullFlash = 0;
+  game.sunk = false;
+  game.enemyGuns = [];
+
   // player ship deck (static)
-  addStaticBox(180, 512, 310, 14, 'deck');
+  const pd = addStaticBox(180, 512, 310, 14, 'deck');
+  pd.playerShip = true;
   game.hulls.push({ cx: 180, w: 310, topY: 505, enemy: false });
 
   const L = LEVELS[idx];
   game.ammo = L.ammo.slice();
   L.build(H_);
+
+  // enemy return fire: bow-chaser mortars on the enemy hull
+  if(L.fire){
+    const eh = game.hulls.find(hl => hl.enemy);
+    if(eh){
+      const gx = eh.cx - eh.w / 2 - 30, gy = eh.topY + 40;
+      for(let g = 0; g < (L.fire.guns || 1); g++){
+        game.enemyGuns.push({
+          x: gx + g * 26, y: gy,
+          t: L.fire.delay + g * L.fire.interval * 0.5,
+          interval: L.fire.interval, variance: L.fire.variance, flash: 0
+        });
+      }
+    }
+  }
 
   game.canFire = true;
   game.state = 'play';
@@ -996,10 +1083,11 @@ function finishLevel(won){
   game.state = 'result';
   game.won = won;
   const idx = game.levelIdx;
-  let bonus = 0;
+  let bonus = 0, hullBonus = 0;
   if(won){
     bonus = (game.ammo.length - game.ammoIndex) * 750;
-    game.score += bonus;
+    hullBonus = Math.round(game.hull) * 4;
+    game.score += bonus + hullBonus;
     Sound.play('win');
   } else {
     Sound.play('lose');
@@ -1022,11 +1110,17 @@ function finishLevel(won){
     if(!won || i >= stars) s.className = 'off';
     starsEl.appendChild(s);
   }
+  const bonusBits = [];
+  if(bonus) bonusBits.push(`+${bonus} ammo`);
+  if(hullBonus) bonusBits.push(`+${hullBonus} hull`);
   document.getElementById('result-score').textContent =
-    won ? `Score: ${game.score}` + (bonus ? `  (+${bonus} ammo bonus)` : '')
-        : 'The scallywags held their ship...';
+    won ? `Score: ${game.score}` + (bonusBits.length ? `  (${bonusBits.join(', ')})` : '')
+        : (game.sunk ? 'Yer hull was blasted to splinters!'
+                     : 'The scallywags held their ship...');
   document.getElementById('result-best').textContent =
-    won ? `Best: ${save.best[idx]}` : 'Try a different angle, Cap\'n!';
+    won ? `Best: ${save.best[idx]}`
+        : (game.sunk ? 'Silence their guns faster next time!'
+                     : 'Try a different angle, Cap\'n!');
   document.getElementById('btn-next').style.display =
     (won && idx + 1 < LEVELS.length) ? '' : 'none';
   showOverlay('result');
@@ -1037,6 +1131,31 @@ function updateGame(dt){
   game.time += dt;
   const w = game.world;
   w.step(dt);
+
+  // enemy cannonballs striking our hull register on any contact
+  for(const m of w.manifolds){
+    for(const [b, other] of [[m.a, m.b], [m.b, m.a]]){
+      if(b.isEnemy && !b.dead && other.playerShip){
+        b.dead = true;
+        damageHull(rand(12, 19), b.pos.x);
+      }
+    }
+  }
+
+  // enemy return fire — the surviving crew mans the guns
+  if(game.state === 'play' && !game.sunk && game.enemyGuns.length){
+    const alive = piratesLeft();
+    if(alive > 0){
+      for(const gun of game.enemyGuns){
+        gun.t -= dt;
+        if(gun.t <= 0){
+          fireEnemyGun(gun);
+          const crewFactor = 1 + 0.3 * (game.piratesTotal - alive);
+          gun.t = gun.interval * crewFactor * rand(0.85, 1.15);
+        }
+      }
+    }
+  }
 
   // impact damage from contacts
   for(const m of w.manifolds){
@@ -1359,6 +1478,38 @@ function drawHullShape(hl, t){
   ctx.closePath(); ctx.fill();
 }
 
+function drawEnemyGun(gun, dt){
+  ctx.save();
+  ctx.translate(gun.x, gun.y);
+  // mounting bracket on the bow
+  ctx.fillStyle = '#2a1a0c';
+  ctx.fillRect(-4, 4, 24, 10);
+  // mortar tube angled up toward the player
+  ctx.rotate(-1.95);
+  const g = ctx.createLinearGradient(0, -9, 0, 9);
+  g.addColorStop(0, '#454e56');
+  g.addColorStop(1, '#14181c');
+  ctx.fillStyle = g;
+  roundRectPath(-6, -9, 34, 18, 6);
+  ctx.fill();
+  ctx.strokeStyle = '#0d1114'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.fillStyle = '#0d1114';
+  ctx.fillRect(22, -10, 5, 20);
+  if(gun.flash > 0){
+    ctx.globalAlpha = gun.flash;
+    ctx.fillStyle = '#ffd75e';
+    ctx.beginPath();
+    ctx.moveTo(28, 0);
+    ctx.lineTo(28 + 26 * gun.flash, -9 * gun.flash);
+    ctx.lineTo(36 + 16 * gun.flash, 0);
+    ctx.lineTo(28 + 26 * gun.flash, 9 * gun.flash);
+    ctx.closePath(); ctx.fill();
+    ctx.globalAlpha = 1;
+    gun.flash = Math.max(0, gun.flash - dt * 5);
+  }
+  ctx.restore();
+}
+
 function drawPlatformShape(p){
   ctx.fillStyle = '#4a2f16';
   for(const px of [p.cx - p.w / 2 + 16, p.cx + p.w / 2 - 16]){
@@ -1503,6 +1654,12 @@ function drawBody(b, t){
         ctx.moveTo(0, -r);
         ctx.quadraticCurveTo(5, -r - 8, 10, -r - 6);
         ctx.stroke();
+      }
+      if(b.isEnemy){
+        // hostile shot marker so incoming fire reads at a glance
+        ctx.strokeStyle = 'rgba(255,92,60,.8)';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.arc(0, 0, r + 2, 0, 7); ctx.stroke();
       }
     }
   }
@@ -1888,6 +2045,24 @@ function drawHUD(){
     drawAmmoIcon(game.ammo[i], x, y, 42);
     ctx.globalAlpha = 1;
   }
+  // hull integrity (only when the enemy shoots back)
+  if(game.enemyGuns.length){
+    const pw2 = 216, px = W - pw2 - 12, py = H - 70;
+    const hf = game.hullFlash;
+    ctx.fillStyle = hf > 0 ? `rgba(${Math.round(30 + 110 * hf)},18,8,.72)` : 'rgba(30,18,8,.65)';
+    roundRectPath(px, py, pw2, 58, 10); ctx.fill();
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 15px Georgia';
+    ctx.fillStyle = '#ffe9b0';
+    ctx.fillText('⛵ HULL', px + 14, py + 22);
+    const frac = clamp(game.hull / game.hullMax, 0, 1);
+    ctx.fillStyle = 'rgba(0,0,0,.5)';
+    roundRectPath(px + 14, py + 30, pw2 - 28, 16, 6); ctx.fill();
+    if(frac > 0){
+      ctx.fillStyle = frac > 0.5 ? '#7dc95e' : frac > 0.25 ? '#e8b923' : '#e04f3a';
+      roundRectPath(px + 16, py + 32, Math.max(6, (pw2 - 32) * frac), 12, 5); ctx.fill();
+    }
+  }
   // hint
   if(game.hintT > 0 && game.hintText){
     const a = clamp(game.hintT, 0, 1);
@@ -1936,6 +2111,7 @@ function render(dt){
   }
   drawBackground(t);
   for(const hl of game.hulls) drawHullShape(hl, t);
+  for(const gun of game.enemyGuns) drawEnemyGun(gun, dt);
   for(const p of game.platforms) drawPlatformShape(p);
   for(const ch of game.chests) drawChest(ch, t);
   // bodies: statics first
@@ -1953,6 +2129,7 @@ function render(dt){
   // decay visual timers
   game.recoil = Math.max(0, game.recoil - dt * 4);
   game.muzzleFlash = Math.max(0, game.muzzleFlash - dt * 8);
+  game.hullFlash = Math.max(0, game.hullFlash - dt * 1.6);
   if(game.hintT > 0) game.hintT -= dt;
 }
 
@@ -2068,5 +2245,5 @@ window.CCV = {
     game.lastActionT = game.time;
     return true;
   },
-  useAbility
+  useAbility, fireEnemyGun, damageHull
 };
