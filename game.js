@@ -861,6 +861,79 @@ const LEVELS = [
       h.pirate(1110, c1);
       h.chest(500);
     }
+  },
+  {
+    name: 'Blood Moon Armada',
+    ammo: ['ball', 'split', 'heavy', 'bomb', 'ball'],
+    stars: [5000, 6800],
+    fire: { interval: 5.2, variance: 34, delay: 3, guns: 1 },
+    hint: 'Two hulls, two guns — pick a target and commit!',
+    build(h){
+      h.enemyShip(660, 230);
+      const t1 = h.crate(610, h.DECK);
+      h.pirate(610, t1);
+      h.pirate(680, h.DECK);
+      h.barrel(730, h.DECK);
+
+      h.enemyShip(1050, 300);
+      const p1 = h.stone(970, h.DECK, 24, 95);
+      h.stone(1040, h.DECK, 24, 95);
+      const t2 = h.stone(1005, p1, 108, 16);
+      h.pirate(1005, t2);
+      h.pirate(1005, h.DECK);
+      const c1 = h.crate(1120, h.DECK);
+      h.pirate(1120, c1);
+      h.chest(860);
+    }
+  },
+  {
+    name: 'The Widowmaker',
+    ammo: ['heavy', 'bomb', 'bomb', 'split', 'ball'],
+    stars: [4700, 6300],
+    fire: { interval: 4.6, variance: 24, delay: 3, guns: 2 },
+    hint: 'Fast twin guns, thick stone — hit hard, hit fast!',
+    build(h){
+      h.enemyShip(960, 460);
+      const p1 = h.stone(770, h.DECK, 26, 105);
+      h.stone(850, h.DECK, 26, 105);
+      const t1 = h.stone(810, p1, 130, 18);
+      h.pirate(810, t1);
+      h.barrel(810, h.DECK);
+
+      h.pirate(900, h.DECK);
+
+      const p2 = h.stone(985, h.DECK, 26, 105);
+      h.stone(1065, h.DECK, 26, 105);
+      const t2 = h.stone(1025, p2, 130, 18);
+      h.pirate(1025, t2, true);     // the Widowmaker's Captain
+      h.pirate(1025, h.DECK);
+
+      h.barrel(1140, h.DECK);
+      h.chest(560);
+    }
+  },
+  {
+    name: 'Storm Armada',
+    ammo: ['bomb', 'heavy', 'split', 'bomb', 'ball', 'bomb'],
+    stars: [5000, 6600],
+    fire: { interval: 4.5, variance: 20, delay: 3, guns: 2 },
+    hint: 'Four guns blazing! Silence them fast or go to Davy Jones.',
+    build(h){
+      h.enemyShip(700, 230);
+      const t1 = h.crate(650, h.DECK);
+      h.pirate(650, t1);
+      h.pirate(715, h.DECK);
+      h.barrel(760, h.DECK);
+
+      h.enemyShip(1075, 300);
+      const p1 = h.stone(995, h.DECK, 24, 95);
+      h.stone(1060, h.DECK, 24, 95);
+      const t2 = h.stone(1028, p1, 100, 16);
+      h.pirate(1028, t2, true);     // the Storm Captain
+      h.pirate(1028, h.DECK);
+      h.barrel(1150, h.DECK);
+      h.chest(880);
+    }
   }
 ];
 

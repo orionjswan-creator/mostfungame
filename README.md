@@ -57,7 +57,10 @@ Works with mouse or touch.
 6. **Davy Jones' Door** — the Captain awaits.
 7. **Ironclad Reef** — stone casemates shelter the crew.
 8. **Twin Terrors** — two ships, guns on both.
-9. **The Kraken's Court** — the final gauntlet. Fast, accurate, merciless.
+9. **The Kraken's Court** — a stone fort, chained barrels, and the Kraken Captain.
+10. **Blood Moon Armada** — two hulls, two independent guns, split fire.
+11. **The Widowmaker** — twin fast guns behind a reinforced double-stone hull.
+12. **Storm Armada** — the finale: two ships, four guns, relentless barrage.
 
 Progress (stars & best scores) is saved in your browser via `localStorage`.
 Levels unlock in order.
