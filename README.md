@@ -25,6 +25,8 @@ Works with mouse or touch.
   ship — watch your **hull bar**. If it hits zero, you're sunk. Every pirate
   you eliminate thins the gun crew and slows their rate of fire. Below 70%
   hull your ship starts smoking; below 30% she's burning — finish the fight!
+- Levels 13-18 also **shrink your maximum hull** (down to 65 on the finale),
+  so there's even less margin for a stray hit.
 - Unspent cannonballs earn **+750 each** and surviving hull earns up to
   **+400** — win fast and clean for 3 stars!
 
@@ -60,7 +62,13 @@ Works with mouse or touch.
 9. **The Kraken's Court** — a stone fort, chained barrels, and the Kraken Captain.
 10. **Blood Moon Armada** — two hulls, two independent guns, split fire.
 11. **The Widowmaker** — twin fast guns behind a reinforced double-stone hull.
-12. **Storm Armada** — the finale: two ships, four guns, relentless barrage.
+12. **Storm Armada** — two ships, four guns, relentless barrage.
+13. **Skull Bay Ambush** — reduced hull (90), four guns, no room for waste.
+14. **The Bonewall** — a triple stone casemate wall with three guns of its own.
+15. **Crimson Tide** — twin hulls, a Captain aloft, hull down to 80.
+16. **The Devil's Broadside** — two fortresses, two Captains, four fast guns.
+17. **Maelstrom** — three ships, five guns, hull down to 72.
+18. **The Last Stand** — the true finale: three ships, six guns, 65 hull. Fear them.
 
 Progress (stars & best scores) is saved in your browser via `localStorage`.
 Levels unlock in order.

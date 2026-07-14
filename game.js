@@ -934,6 +934,169 @@ const LEVELS = [
       h.barrel(1150, h.DECK);
       h.chest(880);
     }
+  },
+  {
+    name: 'Skull Bay Ambush',
+    ammo: ['ball', 'heavy', 'bomb', 'split', 'ball'],
+    stars: [5000, 6600],
+    hullMax: 90,
+    fire: { interval: 4.0, variance: 18, delay: 3, guns: 2 },
+    hint: 'Reduced hull, four guns. No room for wasted shots!',
+    build(h){
+      h.enemyShip(680, 230);
+      const t1 = h.crate(630, h.DECK);
+      h.pirate(630, t1);
+      h.pirate(700, h.DECK);
+      h.barrel(750, h.DECK);
+
+      h.enemyShip(1060, 300);
+      const p1 = h.stone(980, h.DECK, 24, 95);
+      h.stone(1050, h.DECK, 24, 95);
+      const t2 = h.stone(1015, p1, 108, 16);
+      h.pirate(1015, t2, true);     // captain in the casemate
+      h.pirate(1015, h.DECK);
+      const c1 = h.crate(1130, h.DECK);
+      h.pirate(1130, c1);
+      h.chest(880);
+    }
+  },
+  {
+    name: 'The Bonewall',
+    ammo: ['heavy', 'bomb', 'bomb', 'heavy', 'ball'],
+    stars: [4600, 6100],
+    hullMax: 85,
+    fire: { interval: 3.6, variance: 14, delay: 2.5, guns: 3 },
+    hint: 'Three casemates, one hull, three guns — armor-piercing time.',
+    build(h){
+      h.enemyShip(950, 460);
+      const pA1 = h.stone(760, h.DECK, 26, 105);
+      h.stone(840, h.DECK, 26, 105);
+      const tA = h.stone(800, pA1, 124, 18);
+      h.pirate(800, tA);
+      h.barrel(800, h.DECK);
+
+      const pB1 = h.stone(910, h.DECK, 26, 105);
+      h.stone(990, h.DECK, 26, 105);
+      const tB = h.stone(950, pB1, 124, 18);
+      h.pirate(950, tB, true);       // the Bonewall Captain
+
+      const pC1 = h.stone(1080, h.DECK, 26, 105);
+      h.stone(1160, h.DECK, 26, 105);
+      const tC = h.stone(1120, pC1, 124, 18);
+      h.pirate(1120, tC);
+
+      h.pirate(870, h.DECK);
+      h.pirate(1040, h.DECK);
+      h.chest(560);
+    }
+  },
+  {
+    name: 'Crimson Tide',
+    ammo: ['bomb', 'heavy', 'split', 'bomb', 'ball'],
+    stars: [4800, 6300],
+    hullMax: 80,
+    fire: { interval: 3.4, variance: 12, delay: 2.5, guns: 2 },
+    hint: 'Two hulls, four guns, a Captain aloft. Move fast!',
+    build(h){
+      h.enemyShip(700, 240);
+      const t1 = h.post(650, h.DECK);
+      h.post(730, h.DECK);
+      const t2 = h.plank(690, t1, 110);
+      h.pirate(690, t2);
+      h.pirate(700, h.DECK);
+      h.barrel(750, h.DECK);
+
+      h.enemyShip(1080, 320);
+      h.platform(1175, 388, 120);
+      const p1 = h.stone(1000, h.DECK, 26, 100);
+      h.stone(1080, h.DECK, 26, 100);
+      const t3 = h.stone(1040, p1, 124, 18);
+      h.pirate(1040, t3, true);      // captain in the casemate
+      h.pirate(1040, h.DECK);
+      h.pirate(1175, 388);
+      h.barrel(1150, h.DECK);
+      h.chest(860);
+    }
+  },
+  {
+    name: "The Devil's Broadside",
+    ammo: ['heavy', 'bomb', 'bomb', 'split', 'bomb'],
+    stars: [4600, 6000],
+    hullMax: 78,
+    fire: { interval: 3.0, variance: 10, delay: 2.5, guns: 2 },
+    hint: 'Twin captains, twin fortresses, four fast guns.',
+    build(h){
+      h.enemyShip(940, 420);
+      const p1 = h.stone(760, h.DECK, 26, 100);
+      h.stone(840, h.DECK, 26, 100);
+      const t1 = h.stone(800, p1, 124, 18);
+      h.pirate(800, t1, true);       // captain one
+      h.barrel(800, h.DECK);
+
+      const p2 = h.stone(1020, h.DECK, 26, 100);
+      h.stone(1100, h.DECK, 26, 100);
+      const t2 = h.stone(1060, p2, 124, 18);
+      h.pirate(1060, t2, true);      // captain two
+      h.pirate(1060, h.DECK);
+
+      h.pirate(920, h.DECK);
+      h.chest(560);
+    }
+  },
+  {
+    name: 'Maelstrom',
+    ammo: ['bomb', 'heavy', 'split', 'bomb', 'ball', 'bomb'],
+    stars: [4800, 6300],
+    hullMax: 72,
+    fire: { interval: 3.0, variance: 10, delay: 2.2, guns: [2, 2, 1] },
+    hint: 'Three ships, five guns roaring. No safe angle left.',
+    build(h){
+      h.enemyShip(540, 150);
+      h.pirate(540, h.DECK);
+      h.barrel(575, h.DECK);
+
+      h.enemyShip(830, 190);
+      const t1 = h.crate(790, h.DECK);
+      h.pirate(790, t1);
+      h.pirate(850, h.DECK);
+      h.barrel(870, h.DECK);
+
+      h.enemyShip(1120, 200);
+      const p1 = h.stone(1080, h.DECK, 22, 90);
+      h.stone(1150, h.DECK, 22, 90);
+      const t2 = h.stone(1115, p1, 96, 16);
+      h.pirate(1115, t2, true);      // the Maelstrom Captain
+      h.pirate(1115, h.DECK);
+      h.chest(700);
+    }
+  },
+  {
+    name: 'The Last Stand',
+    ammo: ['heavy', 'bomb', 'bomb', 'split', 'heavy', 'bomb'],
+    stars: [5400, 7100],
+    hullMax: 65,
+    fire: { interval: 2.6, variance: 8, delay: 2, guns: [2, 2, 2] },
+    hint: 'Six guns. Sixty-five hull. Show them why they should fear you.',
+    build(h){
+      h.enemyShip(540, 150);
+      const t1 = h.crate(540, h.DECK);
+      h.pirate(540, t1, true);       // raider captain
+
+      h.enemyShip(830, 190);
+      const p1 = h.stone(800, h.DECK, 22, 85);
+      h.stone(860, h.DECK, 22, 85);
+      const t2 = h.stone(830, p1, 90, 16);
+      h.pirate(830, t2);
+      h.pirate(790, h.DECK);
+
+      h.enemyShip(1120, 200);
+      const p2 = h.stone(1080, h.DECK, 22, 90);
+      h.stone(1150, h.DECK, 22, 90);
+      const t3 = h.stone(1115, p2, 96, 16);
+      h.pirate(1115, t3, true);      // the Last Stand Captain
+      h.pirate(1115, h.DECK);
+      h.chest(700);
+    }
   }
 ];
 
@@ -1183,7 +1346,6 @@ function loadLevel(idx){
   game.time = 0;
   game.cannonAngle = -0.5;
 
-  game.hull = game.hullMax = 100;
   game.hullFlash = 0;
   game.sunk = false;
   game.enemyGuns = [];
@@ -1196,15 +1358,21 @@ function loadLevel(idx){
 
   const L = LEVELS[idx];
   game.ammo = L.ammo.slice();
+  game.hull = game.hullMax = L.hullMax || 100;
   L.build(H_);
 
   // enemy return fire: bow-chaser mortars on every enemy hull
+  // L.fire.guns may be a single number (applied to every hull) or an array
+  // giving a distinct gun count per enemy hull, in build order.
   if(L.fire){
-    let gi = 0;
+    let gi = 0, hullIdx = 0;
     for(const eh of game.hulls){
       if(!eh.enemy) continue;
+      const gunsForHull = Array.isArray(L.fire.guns)
+        ? (L.fire.guns[hullIdx] ?? 1) : (L.fire.guns || 1);
+      hullIdx++;
       const gx = eh.cx - eh.w / 2 - 30, gy = eh.topY + 40;
-      for(let g = 0; g < (L.fire.guns || 1); g++, gi++){
+      for(let g = 0; g < gunsForHull; g++, gi++){
         game.enemyGuns.push({
           x: gx + g * 26, y: gy,
           t: L.fire.delay + gi * L.fire.interval * 0.5,
