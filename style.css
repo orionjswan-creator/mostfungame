@@ -166,6 +166,35 @@ button.big { font-size: clamp(19px, 3.4vmin, 30px); padding: 14px 40px; }
 }
 .level-card.locked:hover { transform: none; }
 
+/* ---------- pager ---------- */
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.pager button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font-size: 18px;
+  margin: 0;
+}
+.pager button:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 0 #2e1d0c;
+}
+#page-indicator {
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(13px, 2.2vmin, 17px);
+  color: #55381a;
+  min-width: 7em;
+  text-align: center;
+}
+
 /* ---------- result ---------- */
 .result-panel { min-width: min(420px, 80vw); }
 

@@ -2348,10 +2348,30 @@ function showOverlay(name){
   if(name) document.getElementById('ui-buttons').classList.add('hidden');
 }
 
-function buildLevelGrid(){
+const LEVELS_PER_PAGE = 9;
+const totalLevelPages = () => Math.ceil(LEVELS.length / LEVELS_PER_PAGE);
+let levelPage = 0;
+
+function furthestUnlockedIdx(){
+  let idx = 0;
+  for(let i = 0; i < LEVELS.length; i++){
+    if(i === 0 || (save.stars[i - 1] || 0) > 0) idx = i; else break;
+  }
+  return idx;
+}
+
+function buildLevelGrid(page){
+  if(page === undefined) page = levelPage;
+  const pages = totalLevelPages();
+  page = clamp(page, 0, pages - 1);
+  levelPage = page;
+
   const grid = document.getElementById('level-grid');
   grid.innerHTML = '';
-  LEVELS.forEach((L, i) => {
+  const start = page * LEVELS_PER_PAGE;
+  const end = Math.min(start + LEVELS_PER_PAGE, LEVELS.length);
+  for(let i = start; i < end; i++){
+    const L = LEVELS[i];
     const unlocked = i === 0 || (save.stars[i - 1] || 0) > 0;
     const el = document.createElement('div');
     el.className = 'level-card' + (unlocked ? '' : ' locked');
@@ -2366,7 +2386,17 @@ function buildLevelGrid(){
       el.addEventListener('click', () => { Sound.init(); Sound.play('click'); loadLevel(i); });
     }
     grid.appendChild(el);
-  });
+  }
+  document.getElementById('page-indicator').textContent = `Page ${page + 1} / ${pages}`;
+  document.getElementById('btn-prev-page').disabled = page === 0;
+  document.getElementById('btn-next-page').disabled = page === pages - 1;
+}
+
+function openLevelSelect(targetIdx){
+  const page = Math.floor((targetIdx ?? furthestUnlockedIdx()) / LEVELS_PER_PAGE);
+  buildLevelGrid(page);
+  game.state = 'levels';
+  showOverlay('levels');
 }
 
 function toggleMute(){
@@ -2383,13 +2413,15 @@ function wireUI(){
   const on = (id, fn) => document.getElementById(id).addEventListener('click', () => {
     Sound.init(); Sound.play('click'); fn();
   });
-  on('btn-play', () => { buildLevelGrid(); game.state = 'levels'; showOverlay('levels'); });
+  on('btn-play', () => openLevelSelect());
   on('btn-back', () => { game.state = 'menu'; showOverlay('menu'); });
   on('btn-retry', () => loadLevel(game.levelIdx));
-  on('btn-levels', () => { buildLevelGrid(); game.state = 'levels'; showOverlay('levels'); });
+  on('btn-levels', () => openLevelSelect(game.levelIdx));
   on('btn-next', () => loadLevel(Math.min(game.levelIdx + 1, LEVELS.length - 1)));
   on('btn-restart', () => loadLevel(game.levelIdx));
-  on('btn-map', () => { buildLevelGrid(); game.state = 'levels'; showOverlay('levels'); });
+  on('btn-map', () => openLevelSelect(game.levelIdx));
+  on('btn-prev-page', () => buildLevelGrid(levelPage - 1));
+  on('btn-next-page', () => buildLevelGrid(levelPage + 1));
   document.getElementById('btn-mute').addEventListener('click', () => { toggleMute(); });
 }
 
